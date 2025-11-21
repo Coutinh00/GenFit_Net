@@ -26,10 +26,10 @@ builder.Services.AddControllers();
 
 // Configuração do Entity Framework Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=(localdb)\\mssqllocaldb;Database=GenFitNetDB;Trusted_Connection=True;MultipleActiveResultSets=true";
+    ?? "Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm558515;Password=Fiap#2025;";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseOracle(connectionString));
 
 // Registro dos serviços
 builder.Services.AddScoped<IVagaService, VagaService>();

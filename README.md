@@ -26,116 +26,51 @@ GenFitNet.Tests/            # Testes automatizados
 
 - **.NET 8.0**
 - **Entity Framework Core 8.0**
-- **SQL Server** (LocalDB para desenvolvimento)
+- **Oracle Database** (Oracle 19c ou superior)
+- **Oracle.EntityFrameworkCore** (Provedor EF Core para Oracle)
 - **Serilog** (Logging estruturado)
 - **Swagger/OpenAPI** (Documentação da API)
 - **xUnit** (Testes automatizados)
 - **FluentAssertions** (Assertions mais legíveis)
 - **Moq** (Mocking para testes)
 
-## 📦 Funcionalidades Implementadas
 
-### 1. Boas Práticas REST (30 pts) ✅
 
-- ✅ **Paginação**: Implementada em todos os endpoints de listagem
-  - Parâmetros: `pageNumber` e `pageSize` (máximo 100)
-  - Retorna informações sobre total de páginas, página atual, etc.
+## 🗄️ Banco de Dados Oracle
 
-- ✅ **HATEOAS**: Links de navegação em todas as respostas
-  - Links para recursos relacionados
-  - Links de paginação (first, prev, next, last, self)
-  - Links para ações (self, update, delete)
+Este projeto utiliza o **Oracle Database 19c** fornecido pela FIAP para armazenamento de dados.
 
-- ✅ **Status Codes Adequados**:
-  - `200 OK`: Operação bem-sucedida
-  - `201 Created`: Recurso criado com sucesso
-  - `204 No Content`: Recurso deletado com sucesso
-  - `400 Bad Request`: Dados inválidos
-  - `404 Not Found`: Recurso não encontrado
+### Credenciais de Acesso
 
-- ✅ **Verbos HTTP Corretos**:
-  - `GET`: Consulta de recursos
-  - `POST`: Criação de recursos
-  - `PUT`: Atualização completa de recursos
-  - `DELETE`: Exclusão de recursos
+**Configuração de Conexão:**
+- **Host:** `oracle.fiap.com.br`
+- **Porta:** `1521`
+- **SID:** `ORCL`
+- **Usuário:** `rm558515`
+- **Senha:** `Fiap#2025`
 
-### 2. Monitoramento e Observabilidade (15 pts) ✅
+**Connection String:**
+```
+Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm558515;Password=Fiap#2025;
+```
 
-- ✅ **Health Checks**:
-  - Endpoint `/health`: Verificação básica de saúde
-  - Endpoint `/health/detailed`: Verificação detalhada com informações do banco de dados
-  - Integração com Entity Framework Core para verificar conectividade do banco
+### Estrutura do Banco de Dados
 
-- ✅ **Logging**:
-  - Configurado com **Serilog**
-  - Logs estruturados em console e arquivo
-  - Logs rotativos diários em `logs/genfitnet-YYYYMMDD.txt`
-  - Níveis de log configuráveis por ambiente
+O banco de dados Oracle contém as seguintes tabelas principais:
 
-- ✅ **Tracing**:
-  - Implementado com `System.Diagnostics.ActivitySource`
-  - Rastreamento de operações HTTP
-  - Tags para identificação de requisições (método, path, status code)
-  - Atividades nomeadas por operação (GetAllVagas, CreateVaga, etc.)
+- **VAGAS** - Armazena informações sobre vagas de emprego
+- **CANDIDATOS** - Armazena dados dos candidatos
+- **AUDIT_LOGS** - Logs de auditoria para rastreamento de operações
 
-### 3. Versionamento da API (10 pts) ✅
-
-- ✅ **Estrutura de Versionamento**:
-  - Versão atual: **v1** (`/api/v1/`)
-  - Configurado com `Microsoft.AspNetCore.Mvc.Versioning`
-  - Suporte para múltiplas versões simultâneas
-  - Versionamento via URL path
-
-- ✅ **Rotas Versionadas**:
-  - `/api/v1/vagas` - Gestão de vagas
-  - `/api/v1/candidatos` - Gestão de candidatos
-  - `/api/v1/candidatos/search` - Pesquisa de candidatos
-
-- ✅ **Controle de Versão**:
-  - Versão padrão: v1.0
-  - Versão especificada na URL: `v{version:apiVersion}`
-  - Swagger configurado para exibir versões disponíveis
-
-### 4. Integração e Persistência (30 pts) ✅
-
-- ✅ **Banco de Dados**:
-  - **SQL Server** (LocalDB para desenvolvimento)
-  - Configuração via Connection String em `appsettings.json`
-
-- ✅ **Entity Framework Core**:
-  - DbContext configurado com relacionamentos
-  - Configuração de entidades com constraints e validações
-  - Seed data para desenvolvimento
-
-- ✅ **Migrations**:
-  - Migration inicial criada: `20240101000000_InitialCreate.cs`
-  - Migrations aplicadas automaticamente em desenvolvimento
-  - Suporte para evolução do esquema do banco
-
-- ✅ **Modelos**:
-  - **Vaga**: Representa vagas de emprego
-  - **Candidato**: Representa candidatos
-  - Relacionamento: Um candidato pode estar associado a uma vaga (opcional)
-
-### 5. Testes Integrados (15 pts) ✅
-
-- ✅ **Testes com xUnit**:
-  - Testes de controllers (`VagasControllerTests`, `CandidatosControllerTests`)
-  - Testes de services (`VagaServiceTests`)
-  - Testes de integração usando banco em memória
-
-- ✅ **Cobertura de Testes**:
-  - Testes de criação, leitura, atualização e exclusão (CRUD)
-  - Testes de paginação
-  - Testes de filtros e pesquisas
-  - Testes de validação e tratamento de erros
+> **Nota:** O banco de dados Oracle da FIAP já está configurado e disponível. As migrations do Entity Framework Core serão aplicadas automaticamente ao executar a aplicação em modo desenvolvimento.
 
 ## 🔧 Configuração e Execução
 
 ### Pré-requisitos
 
-- .NET 8.0 SDK
-- SQL Server ou SQL Server LocalDB
+- .NET 8.0 SDK (versão 8.0.22 ou superior)
+- Oracle Database 19c (fornecido pela FIAP)
+- Oracle Client (ODAC) instalado (para desenvolvimento local)
 - Visual Studio 2022 ou VS Code
 
 ### Instalação
@@ -155,18 +90,33 @@ dotnet restore
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=GenFitNetDB;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm558515;Password=Fiap#2025;"
   }
 }
 ```
 
-4. Execute as migrations:
-```bash
-cd GenFitNet.API
-dotnet ef database update
-```
+**Credenciais do Banco de Dados Oracle (FIAP):**
+- **Host:** `oracle.fiap.com.br`
+- **Porta:** `1521`
+- **SID:** `ORCL`
+- **Usuário:** `rm558515`
+- **Senha:** `Fiap#2025`
 
-Ou as migrations serão aplicadas automaticamente ao iniciar a aplicação em modo desenvolvimento.
+**Formato da Connection String Oracle:**
+- `Data Source`: Host:Port/SID (ex: oracle.fiap.com.br:1521/ORCL)
+- `User Id`: Nome do usuário do banco de dados
+- `Password`: Senha do usuário
+
+4. **Configuração do Banco de Dados:**
+   
+   As migrations serão aplicadas automaticamente ao iniciar a aplicação em modo desenvolvimento. Se preferir executar manualmente:
+   
+   ```bash
+   cd GenFitNet.API
+   dotnet ef database update
+   ```
+   
+   > **Importante:** Certifique-se de que o banco de dados Oracle da FIAP está acessível e que as credenciais estão corretas no `appsettings.json`.
 
 5. Execute a aplicação:
 ```bash
@@ -182,6 +132,114 @@ https://localhost:5001/swagger
 
 ```bash
 dotnet test
+```
+
+### Comandos Úteis
+
+**Compilar o projeto:**
+```bash
+dotnet build
+```
+
+**Executar o projeto (da pasta raiz):**
+```bash
+dotnet run --project GenFitNet.API/GenFitNet.API.csproj
+```
+
+**Executar o projeto (Git Bash - Windows):**
+```bash
+"/c/Program Files/dotnet/dotnet.exe" run --project GenFitNet.API/GenFitNet.API.csproj
+```
+
+**Executar o projeto (navegando para a pasta):**
+```bash
+cd GenFitNet.API
+dotnet run
+```
+
+**Aplicar migrations manualmente:**
+```bash
+cd GenFitNet.API
+dotnet ef database update
+```
+
+## 🌐 Deploys da API
+
+### Ambiente de Desenvolvimento Local
+
+**URL Base:** `http://localhost:5000` ou `https://localhost:5001`
+
+**Swagger UI:** 
+- HTTP: `http://localhost:5000/swagger`
+- HTTPS: `https://localhost:5001/swagger`
+
+**Health Check:**
+- Básico: `http://localhost:5000/health`
+- Detalhado: `http://localhost:5000/health/detailed`
+
+**Banco de Dados:**
+- **Tipo:** Oracle Database (FIAP)
+- **Host:** `oracle.fiap.com.br`
+- **Porta:** `1521`
+- **SID:** `ORCL`
+- **Usuário:** `rm558515`
+- **Senha:** `Fiap#2025`
+- **Connection String:** `Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm558515;Password=Fiap#2025;`
+
+**Instruções de Acesso:**
+1. Execute o projeto localmente usando:
+   ```bash
+   dotnet run --project GenFitNet.API
+   ```
+   Ou no Git Bash:
+   ```bash
+   "/c/Program Files/dotnet/dotnet.exe" run --project GenFitNet.API/GenFitNet.API.csproj
+   ```
+2. Acesse o Swagger UI para visualizar e testar os endpoints
+3. As migrations são aplicadas automaticamente em modo desenvolvimento
+4. Verifique a conexão com o banco Oracle através do endpoint `/health/detailed`
+
+**Testes:**
+- Não é necessário autenticação para acessar a API
+- Use o Swagger UI para testar os endpoints interativamente
+- Todos os endpoints estão documentados no Swagger
+- O banco de dados Oracle da FIAP está configurado e pronto para uso
+
+### Ambiente de Produção
+
+> **⚠️ Status:** Atualmente, o projeto **não possui deploy de produção configurado**. Esta seção é um template para ser preenchido quando o deploy for realizado.
+
+**Configurações Atuais do Projeto:**
+- ✅ Apenas ambiente de desenvolvimento local configurado
+- ❌ Não há `appsettings.Production.json`
+- ❌ Não há Dockerfile ou configurações de containerização
+- ❌ Não há pipelines de CI/CD configurados
+- ❌ Não há variáveis de ambiente de produção definidas
+
+**Quando o deploy for configurado, adicione aqui:**
+- **URL Base:** `[URL_DO_DEPLOY]`
+- **Swagger UI:** `[URL_DO_DEPLOY]/swagger`
+- **Health Check:**
+  - Básico: `[URL_DO_DEPLOY]/health`
+  - Detalhado: `[URL_DO_DEPLOY]/health/detailed`
+- **Banco de Dados:**
+- **Tipo:** Oracle Database
+- **Connection String:** Configurada via variáveis de ambiente
+- **Formato:** `Data Source=[HOST]:[PORT]/[SERVICE_NAME];User Id=[USER];Password=[PASSWORD];`
+- **Schema/User:** `[NOME_DO_SCHEMA]`
+- **Instruções de Acesso e Testes**
+
+### Exemplo de Teste Rápido
+
+```bash
+# Verificar se a API está online
+curl http://localhost:5000/health
+
+# Listar vagas
+curl http://localhost:5000/api/v1/vagas
+
+# Listar candidatos
+curl http://localhost:5000/api/v1/candidatos
 ```
 
 ## 📚 Endpoints da API
@@ -325,21 +383,59 @@ O tracing está habilitado automaticamente e captura:
 - Status code da resposta
 - Duração da operação
 
+## 🔗 Integração com Banco de Dados Oracle
+
+### Connection String Format
+
+A connection string do Oracle segue o formato:
+```
+Data Source=HOST:PORT/SID;User Id=USERNAME;Password=PASSWORD;
+```
+
+### Exemplo de Conexão
+
+```csharp
+// Configuração automática via appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseOracle(connectionString));
+```
+
+### Troubleshooting de Conexão
+
+Se encontrar problemas de conexão:
+
+1. **Verifique as credenciais** no `appsettings.json`
+2. **Teste a conectividade** com o banco Oracle:
+   ```bash
+   # Verificar se o host está acessível
+   ping oracle.fiap.com.br
+   ```
+3. **Verifique o Health Check** da API:
+   ```bash
+   curl http://localhost:5000/health/detailed
+   ```
+4. **Confirme que o Oracle Client está instalado** no ambiente de desenvolvimento
+
 ## 📄 Licença
 
-Este projeto foi desenvolvido para fins acadêmicos.
+Este projeto foi desenvolvido para fins acadêmicos como parte do curso "Advanced Business Development with .NET" da FIAP.
 
 ## 👥 Autores
 
-Desenvolvido como parte do projeto "Advanced Business Development with .NET" - FIAP.
+**Projeto:** GenFitNet - Sistema de Recrutamento Inteligente com IA
+
+**Disciplina:** Advanced Business Development with .NET - FIAP
 
 **Integrantes:**
-- Vinicius Murtinho Vicente - RM551151
-- Lucas Barreto Consentino - RM557107
-- Gustavo Bispo Cordeiro - RM558515
+- **Vinicius Murtinho Vicente** - RM551151
+- **Lucas Barreto Consentino** - RM557107
+- **Gustavo Bispo Cordeiro** - RM558515
 
 ---
 
-**Versão da API**: v1.0  
-**Última atualização**: 2024
+**Versão da API:** v1.0  
+**Última atualização:** Novembro 2024  
+**Banco de Dados:** Oracle Database 19c (FIAP)  
+**Framework:** .NET 8.0
 
