@@ -98,9 +98,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-app.UseAuthorization();
-
-// Middleware de Tracing
+// Middleware de Tracing (deve vir antes do routing)
 app.Use(async (context, next) =>
 {
     using var activity = activitySource.StartActivity($"{context.Request.Method} {context.Request.Path}");
@@ -111,6 +109,8 @@ app.Use(async (context, next) =>
     
     activity?.SetTag("http.status_code", context.Response.StatusCode);
 });
+
+app.UseAuthorization();
 
 app.MapControllers();
 
