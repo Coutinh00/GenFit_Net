@@ -2,6 +2,7 @@ using GenFitNet.Application.DTOs;
 using GenFitNet.Infrastructure.Data;
 using GenFitNet.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GenFitNet.Application.Services;
 
